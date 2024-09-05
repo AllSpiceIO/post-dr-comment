@@ -27,7 +27,7 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - "--allspice_hub_url"
+    - "--allspice-hub-url"
     - ${{ github.server_url }}
     - "--repository"
     - ${{ github.repository }}
