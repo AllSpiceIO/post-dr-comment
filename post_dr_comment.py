@@ -7,6 +7,7 @@ post_dr_comment.py: Post a comment to an AllSpice Hub Design Review.
 import argparse
 import logging
 import os
+import sys
 import yaml
 
 from typing import Tuple
@@ -63,9 +64,8 @@ def parse_front_matter(comment_body: str) -> Tuple[dict, str]:
 
     if not found_front_matter:
         logger.info("No front matter found in comment body.")
-        return front_matter, comment_body
 
-    return front_matter, stripped_comment_body
+    return front_matter, comment_body
 
 
 def upsert_comment(design_review: DesignReview, comment_body: str) -> Comment:
@@ -109,7 +109,16 @@ def upsert_attachments(comment: Comment, attachments: list[str]):
 
     for attachment in attachments:
         with open(attachment, "rb") as f:
-            comment.create_attachment(f)
+            try:
+                comment.create_attachment(f)
+            except Exception as e:
+                if "500" in str(e):
+                    logger.error(
+                        f"Failed to upload attachment {attachment}. "
+                        "The file may be too large, or it may be of a file type "
+                        "that is not supported by the AllSpice Hub."
+                    )
+                    sys.exit(1)
 
 
 def main():
