@@ -1,0 +1,43 @@
+name: "Post Comment on a Design Review"
+description: >
+  Post a comment on a Design Review using a markdown file as the source of the
+  comment. 
+
+  This works only when used in a workflow triggered by a Design Review, as it
+  will automatically pick up the associated design review. By default,
+  successive runs of the action will edit the same comment.
+
+  This action also reads YAML frontmatter from the markdown file to post
+  attachments to the posted comment.
+
+inputs:
+  comment_path:
+    description: The path to a markdown file containing the comment body.
+    required: true
+  reuse_existing_comment:
+    description: Whether to reuse the existing comment made by this action in successive runs.
+    required: false
+    default: "True"
+  log_level:
+    description: The log level used by the action. Used for debugging.
+    required: false
+    default: "INFO"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - "--allspice_hub_url"
+    - ${{ github.server_url }}
+    - "--repository"
+    - ${{ github.repository }}
+    - "--design-review-number"
+    - ${{ github.event.number }}
+    - "--comment-path"
+    - "${{ github.workspace}}/${{ inputs.comment_path }}"
+    - "--reuse-existing-comment"
+    - ${{ inputs.reuse_existing_comment }}
+    - "--log-level"
+    - ${{ inputs.log_level }}
+  env:
+    ALLSPICE_AUTH_TOKEN: ${{ github.token }}

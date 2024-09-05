@@ -1,0 +1,3 @@
+py-allspice~=3.5.0
+PyYAML~=6.0.2
+
