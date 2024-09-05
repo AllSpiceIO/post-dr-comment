@@ -79,6 +79,7 @@ def upsert_comment(design_review: DesignReview, comment_body: str) -> Comment:
 
     existing_comment = None
     comments = design_review.get_comments()
+    updated_comment_body = f"{COMMENT_IDENTIFIER}\n{comment_body}"
 
     for comment in comments:
         if COMMENT_IDENTIFIER in comment.body:
@@ -87,13 +88,13 @@ def upsert_comment(design_review: DesignReview, comment_body: str) -> Comment:
 
     if existing_comment:
         logger.info("Updating existing comment.")
-        existing_comment.body = comment_body
+        existing_comment.body = updated_comment_body
         existing_comment.commit()
 
         return existing_comment
     else:
         logger.info("Creating new comment.")
-        return design_review.create_comment(comment_body)
+        return design_review.create_comment(updated_comment_body)
 
 
 def upsert_attachments(comment: Comment, attachments: list[str]):
