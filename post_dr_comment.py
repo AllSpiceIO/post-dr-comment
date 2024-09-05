@@ -1,3 +1,5 @@
+#! /usr/bin/env -S python3
+
 """
 post_dr_comment.py: Post a comment to an AllSpice Hub Design Review.
 """
