@@ -168,6 +168,11 @@ def main():
 
     args = parser.parse_args()
 
+    if not args.design_review_number.isdigit():
+        raise ValueError(
+            "Design review number is either not set or not a number; this run may not be on a pull request event?"
+        )
+
     logger.setLevel(args.log_level.upper())
     client = AllSpice(
         args.allspice_hub_url,
